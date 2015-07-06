@@ -1,0 +1,44 @@
+<Project DefaultTargets="all" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
+  <Import Project="Version.proj"/>
+  <PropertyGroup Condition="'$(Configuration)'==''">
+    <Configuration>Debug;Release</Configuration>
+  </PropertyGroup>
+  <Target Name="configurations">
+        <CreateItem Include="$(Configuration)">
+            <Output TaskParameter="Include" ItemName="Configuration" />
+        </CreateItem>
+  </Target>
+  <Target Name="all" DependsOnTargets="configurations" Inputs="@(Configuration)" Outputs="target\%(Configuration.FileName)">
+    <CallTarget Targets="clean" />
+    <CallTarget Targets="version" />
+    <CallTarget Targets="build" />
+    <CallTarget Targets="test" />
+    <CallTarget Targets="zip" />
+  </Target>
+  <Target Name="clean" DependsOnTargets="configurations" Inputs="@(Configuration)" Outputs="target\%(Configuration.FileName)">
+    <Message Importance="high" Text="Cleaning project, %(Configuration.Identity) ..." />
+    <MSBuild Projects="ProcessDomain.sln" Targets="Clean" Properties="Configuration=%(Configuration.Identity)" />
+    <Delete Files="src\Version\GlobalAssemblyInfo.cs" />
+    <DeleteTree Directories="Build" Recursive="true" />
+  </Target>
+  <Target Name="build" DependsOnTargets="version;configurations" Inputs="@(Configuration)" Outputs="target\%(Configuration.FileName)">
+    <Message Importance="high" Text="Compiling and linking project, %(Configuration.Identity) ..." />
+    <MSBuild Projects="ProcessDomain.sln" Targets="Build" Properties="Configuration=%(Configuration.Identity)" />
+  </Target>
+  <Target Name="test" DependsOnTargets="build" Inputs="@(Configuration)" Outputs="target\%(Configuration.FileName)">
+    <Message Importance="high" Text="Running tests, %(Configuration.Identity) ..." />
+    <CreateItem Include="src\**\bin\%(Configuration.Identity)\*.UnitTests.dll">
+      <Output TaskParameter="Include" ItemName="UnitTestAssemblies"/>
+    </CreateItem>
+    <Message Text="@(UnitTestAssemblies)" />
+    <NUnit Assemblies="@(UnitTestAssemblies)" ToolPath="externals\nunit" />
+  </Target>
+  <Target Name="zip" DependsOnTargets="test" Inputs="@(Configuration)" Outputs="target\%(Configuration.FileName)">    
+    <CreateItem Include="Build\%(Configuration.Identity)\**\*" Exclude="Build\%(Configuration.Identity)\*.zip">
+      <Output TaskParameter="Include" ItemName="PackageFiles" />
+    </CreateItem>
+    <Zip WorkingDirectory="Build\%(Configuration.Identity)" ZipFileName="Build\%(Configuration.Identity)\$(Major).$(Minor).zip" Files="@(PackageFiles)" />
+    <Message Text="Publishing ProcessDomain Binaries - Version: $(Major).$(Minor).$(Build).$(Revision)"/>
+  </Target>
+</Project>
