@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSecInc.ProcessDomain", "src\AppSecInc.ProcessDomain\AppSecInc.ProcessDomain.csproj", "{D69AD209-D78A-4091-9F5F-4D7562D66223}"
 	ProjectSection(ProjectDependencies) = postProject
 		{81E2FA83-26A1-4BE3-8F38-2C7327EC7840} = {81E2FA83-26A1-4BE3-8F38-2C7327EC7840}
@@ -11,6 +13,23 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSecInc.ProcessDomain.Host", "src\AppSecInc.ProcessDomain.Host\AppSecInc.ProcessDomain.Host.csproj", "{81E2FA83-26A1-4BE3-8F38-2C7327EC7840}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppSecInc.ProcessDomain.Sample", "src\AppSecInc.ProcessDomain.Sample\AppSecInc.ProcessDomain.Sample.csproj", "{AA4C3A45-921B-422F-ABFF-B1848686596D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{1FA63DD9-AED9-4C59-9037-CBCBCA352871}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		build.cmd = build.cmd
+		LICENSE = LICENSE
+		ProcessDomain.proj = ProcessDomain.proj
+		README.md = README.md
+		Version.proj = Version.proj
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{92399DD0-ABB6-4510-96E0-8AD536B0AA88}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

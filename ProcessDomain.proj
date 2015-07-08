@@ -32,7 +32,7 @@
       <Output TaskParameter="Include" ItemName="UnitTestAssemblies"/>
     </CreateItem>
     <Message Text="@(UnitTestAssemblies)" />
-    <NUnit Assemblies="@(UnitTestAssemblies)" ToolPath="externals\nunit" />
+    <NUnit Assemblies="@(UnitTestAssemblies)" ToolPath="packages\NUnit.Runners.2.6.4\tools" />
   </Target>
   <Target Name="zip" DependsOnTargets="test" Inputs="@(Configuration)" Outputs="target\%(Configuration.FileName)">    
     <CreateItem Include="Build\%(Configuration.Identity)\**\*" Exclude="Build\%(Configuration.Identity)\*.zip">
