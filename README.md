@@ -24,9 +24,8 @@ As of version 1.8, ProcessDomain will be available via NuGet as well: https://nu
 
 ###To Build Source
 
-Visual Studio .NET 2008
+Visual Studio 2013
 [MSBuild Community Tasks 1.3](http://msbuildtasks.tigris.org/MSBuild.Community.Tasks.Nightly.msi)
-Set SvnDir environment variable to point to your SVN installation directory or install SVN in one of the known locations - see build.cmd.
 
 ###To Use Assemblies
 .NET Framework 2.0
