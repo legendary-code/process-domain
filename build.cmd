@@ -14,8 +14,7 @@ if NOT "%ProgramFiles(x86)%"=="" set ProgramFilesDir=%ProgramFiles(x86)%
 set VisualStudioCmd=%VS120COMNTOOLS%\VsDevCmd.bat
 if EXIST "%VisualStudioCmd%" call "%VisualStudioCmd%"
 
-set FrameworkVersion=v3.5
-set FrameworkDir=%SystemRoot%\Microsoft.NET\Framework
+.nuget\NuGet.exe restore ProcessDomain.sln
 
 msbuild.exe ProcessDomain.proj /l:FileLogger,Microsoft.Build.Engine;logfile=MSBuild.log /t:%*
 if NOT %ERRORLEVEL%==0 exit /b %ERRORLEVEL%
