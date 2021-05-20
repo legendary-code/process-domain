@@ -1,24 +1,12 @@
-﻿/*******************************************************************************
-* ProcessDomain (http://processdomain.codeplex.com)
-* 
-* Copyright (c) 2011 Application Security, Inc.
-* 
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*     Application Security, Inc.
-*******************************************************************************/
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Security;
+using System.Security.Permissions;
 using System.Threading;
 using AppSecInc.ProcessDomain.Remoting;
 using AppSecInc.ProcessDomain.Utils;
@@ -32,10 +20,15 @@ namespace AppSecInc.ProcessDomain.UnitTests
         static readonly string TestObjectAssemblyName = typeof(RemoteTestObject).Assembly.FullName;
         static readonly string TestObjectTypeName = typeof(RemoteTestObject).FullName;
 
+        static readonly ProcessDomainSetup DefaultSetupInfo = new ProcessDomainSetup
+        {
+            TypeFilterLevel = TypeFilterLevel.Full
+        };
+
         [Test]
         public void TestFriendlyName()
         {
-            using (var domain = ProcessDomain.CreateDomain("ProcessDomain"))
+            using (var domain = ProcessDomain.CreateDomain("ProcessDomain", DefaultSetupInfo))
             {
                 var obj = (RemoteTestObject)domain.CreateInstanceAndUnwrap(TestObjectAssemblyName, TestObjectTypeName);
                 Assert.That(obj.GetProcessId(), Is.Not.EqualTo(Process.GetCurrentProcess().Id));
@@ -50,7 +43,7 @@ namespace AppSecInc.ProcessDomain.UnitTests
             var attachedEvent = new ManualResetEvent(false);
             var detachedEvent = new ManualResetEvent(false);
 
-            using (var domain = ProcessDomain.CreateDomain("ProcessDomain"))
+            using (var domain = ProcessDomain.CreateDomain("ProcessDomain", DefaultSetupInfo))
             {
                 domain.Attached += () => attachedEvent.Set();
                 domain.Detached += () => detachedEvent.Set();
@@ -73,7 +66,8 @@ namespace AppSecInc.ProcessDomain.UnitTests
 
             var setupInfo = new ProcessDomainSetup
             {
-                RestartOnProcessExit = false
+                RestartOnProcessExit = false,
+                TypeFilterLevel = TypeFilterLevel.Full
             };
 
             // now restart should not occur
@@ -100,7 +94,7 @@ namespace AppSecInc.ProcessDomain.UnitTests
         [Test]
         public void TestDefaultWorkingDirectory()
         {
-            using (var domain = ProcessDomain.CreateDomain("ProcessDomain"))
+            using (var domain = ProcessDomain.CreateDomain("ProcessDomain", DefaultSetupInfo))
             {
                 var obj = (RemoteTestObject)domain.CreateInstanceAndUnwrap(TestObjectAssemblyName, TestObjectTypeName);
                 Assert.That(obj.CurrentDirectory, Is.EqualTo(Environment.CurrentDirectory));
@@ -114,11 +108,12 @@ namespace AppSecInc.ProcessDomain.UnitTests
 
             var setupInfo = new ProcessDomainSetup
             {
-                ExecutableDirectory = Environment.CurrentDirectory
+                ExecutableDirectory = Environment.CurrentDirectory,
+                TypeFilterLevel = TypeFilterLevel.Full
             };
 
             // default uses temp directory
-            using (var domain1 = ProcessDomain.CreateDomain("MyDomain"))
+            using (var domain1 = ProcessDomain.CreateDomain("MyDomain", DefaultSetupInfo))
             {
                 var obj = (RemoteTestObject)domain1.CreateInstanceAndUnwrap(TestObjectAssemblyName, TestObjectTypeName);
                 Assert.That(obj.GetProcessFileName(), Is.Not.EqualTo(desiredExecutableFileName));
@@ -178,7 +173,7 @@ namespace AppSecInc.ProcessDomain.UnitTests
         public void TestConfigurationLocation()
         {
             // by default uses our app config
-            using (var domain1 = ProcessDomain.CreateDomain("Domain1"))
+            using (var domain1 = ProcessDomain.CreateDomain("Domain1", DefaultSetupInfo))
             {
                 var obj = (RemoteTestObject)domain1.CreateInstanceAndUnwrap(TestObjectAssemblyName, TestObjectTypeName);
                 Assert.That(obj.GetAppConfigValue("MyValue"), Is.EqualTo("MyValue"));
@@ -189,8 +184,9 @@ namespace AppSecInc.ProcessDomain.UnitTests
             {
                 AppDomainSetupInformation =
                 {
-                    ConfigurationFile = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile), "OtherApp.config")
-                }
+                    ConfigurationFile = Path.Combine(Path.GetDirectoryName(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile), "OtherApp.config"),
+                },
+                TypeFilterLevel = TypeFilterLevel.Full
             };
 
             using (var domain2 = ProcessDomain.CreateDomain("Domain2", setupInfo))
@@ -209,7 +205,7 @@ namespace AppSecInc.ProcessDomain.UnitTests
             {
                 Directory.SetCurrentDirectory(Path.Combine(prevDirectory, ".."));
 
-                using (var domain = ProcessDomain.CreateDomain("ProcessDomain"))
+                using (var domain = ProcessDomain.CreateDomain("ProcessDomain", DefaultSetupInfo))
                 {
                     // this used to fail because it would try to load the ProcessDomain assembly from 'current directory'
                 }
@@ -241,9 +237,9 @@ namespace AppSecInc.ProcessDomain.UnitTests
             // by default, it's low, which will fail
             using (var domain = ProcessDomain.CreateDomain("Domain"))
             {
-                var obj = (RemoteTestObject)domain.CreateInstanceAndUnwrap(TestObjectAssemblyName, TestObjectTypeName);
-
-                Assert.Throws<SecurityException>(()=> obj.CallbackEvent += () => Assert.Fail("This should have failed"));
+                Assert.Throws<SerializationException>(
+                    () => { var obj = (RemoteTestObject)domain.CreateInstanceAndUnwrap(TestObjectAssemblyName, TestObjectTypeName); }
+                );
             }
 
             // now enable the remoting channel with type filter level Full
@@ -266,8 +262,8 @@ namespace AppSecInc.ProcessDomain.UnitTests
             // Along with enabling support for TypeFilterLevel = Full, we also have to allow multiple
             // channels to be created.  This will simply do just that and ensure there's no 
             // duplicate channel registration exceptions
-            using (var domain1 = ProcessDomain.CreateDomain("Domain1"))
-            using (var domain2 = ProcessDomain.CreateDomain("Domain2"))
+            using (var domain1 = ProcessDomain.CreateDomain("Domain1", DefaultSetupInfo))
+            using (var domain2 = ProcessDomain.CreateDomain("Domain2", DefaultSetupInfo))
             {
                 var obj1 = (RemoteTestObject)domain1.CreateInstanceAndUnwrap(TestObjectAssemblyName, TestObjectTypeName);
                 var obj2 = (RemoteTestObject)domain2.CreateInstanceAndUnwrap(TestObjectAssemblyName, TestObjectTypeName);
@@ -285,7 +281,7 @@ namespace AppSecInc.ProcessDomain.UnitTests
         public void TestProcessPriority()
         {
             // Default case
-            using (var domain = ProcessDomain.CreateDomain("TestPriorityDomain"))
+            using (var domain = ProcessDomain.CreateDomain("TestPriorityDomain", DefaultSetupInfo))
             {
                 var obj = (RemoteTestObject)domain.CreateInstanceAndUnwrap(typeof(RemoteTestObject).Assembly.FullName, typeof(RemoteTestObject).FullName);
                 Assert.That(obj.GetPriority(), Is.EqualTo(ProcessPriorityClass.Normal));
@@ -294,11 +290,15 @@ namespace AppSecInc.ProcessDomain.UnitTests
             // Try each priority
             foreach (ProcessPriorityClass priority in Enum.GetValues(typeof(ProcessPriorityClass)))
             {
-                var setup = new ProcessDomainSetup { PriorityClass = priority };
+                var setup = new ProcessDomainSetup { PriorityClass = priority, TypeFilterLevel = TypeFilterLevel.Full };
                 using (var domain = ProcessDomain.CreateDomain("TestPriorityDomain", setup))
                 {
                     var obj = (RemoteTestObject)domain.CreateInstanceAndUnwrap(typeof(RemoteTestObject).Assembly.FullName, typeof(RemoteTestObject).FullName);
-                    Assert.That(obj.GetPriority(), Is.EqualTo(priority));
+
+                    // If not running as administrator, we can't run as RealTime, it will become High
+                    var expectedPriority = priority == ProcessPriorityClass.RealTime && !obj.RunningAsAdministrator() ? ProcessPriorityClass.High : priority;
+
+                    Assert.That(obj.GetPriority(), Is.EqualTo(expectedPriority));
                 }
             }
         }

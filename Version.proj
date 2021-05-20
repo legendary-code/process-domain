@@ -1,32 +1,14 @@
 <Project DefaultTargets="version" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
   <PropertyGroup>
     <ProductName>Process Domain</ProductName>
-    <CompanyName>Application Security, Inc.</CompanyName>
-    <Copyright>Copyright (c) Application Security, Inc. 2011</Copyright>
-    <Trademark>All Rights Reserved</Trademark>
-    <MajorVersion>1</MajorVersion>
-    <MinorVersion>9</MinorVersion>
   </PropertyGroup>
+  <Import Project="MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets" />
   <Target Name="version">
-    <Version Major="$(MajorVersion)" Minor="$(MinorVersion)" Build="0">
-      <Output TaskParameter="Major" PropertyName="Major" />
-      <Output TaskParameter="Minor" PropertyName="Minor" />
-      <Output TaskParameter="Revision" PropertyName="Revision" />
-      <Output TaskParameter="Revision" PropertyName="Build" />
-    </Version>
-    <CreateItem Include="Major" AdditionalMetadata="ReplacementValue=$(Major)"><Output TaskParameter="Include" ItemName="AssemblyInfoTokens"/></CreateItem>
-    <CreateItem Include="Minor" AdditionalMetadata="ReplacementValue=$(Minor)"><Output TaskParameter="Include" ItemName="AssemblyInfoTokens"/></CreateItem>
-    <CreateItem Include="Build" AdditionalMetadata="ReplacementValue=$(Build)"><Output TaskParameter="Include" ItemName="AssemblyInfoTokens"/></CreateItem>
-    <CreateItem Include="Revision" AdditionalMetadata="ReplacementValue=$(Revision)"><Output TaskParameter="Include" ItemName="AssemblyInfoTokens"/></CreateItem>
-    <CreateItem Include="CompanyName" AdditionalMetadata="ReplacementValue=$(CompanyName)"><Output TaskParameter="Include" ItemName="AssemblyInfoTokens"/></CreateItem>
-    <CreateItem Include="Copyright" AdditionalMetadata="ReplacementValue=$(Copyright)"><Output TaskParameter="Include" ItemName="AssemblyInfoTokens"/></CreateItem>
-    <CreateItem Include="Trademark" AdditionalMetadata="ReplacementValue=$(Trademark)"><Output TaskParameter="Include" ItemName="AssemblyInfoTokens"/></CreateItem>
-    <Message Text="Version: $(Major).$(Minor).$(Build).$(Revision)"/>
+    <Message Text="Version: $(Version).0"/>
     <AssemblyInfo CodeLanguage="CS" OutputFile="src\Version\GlobalAssemblyInfo.cs"
        AssemblyCulture="" ComVisible="false"
        AssemblyProduct="$(ProductName)"
-       AssemblyCompany="$(CompanyName)" AssemblyCopyright="$(Copyright)" AssemblyTrademark="$(Trademark)"       
-       AssemblyVersion="$(Major).$(Minor).$(Build).$(Revision)"
-       AssemblyFileVersion="$(Major).$(Minor).$(Build).$(Revision)" />
+       AssemblyVersion="$(Version).0"
+       AssemblyFileVersion="$(Version).0" />
   </Target>
 </Project>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>AppSecInc.ProcessDomain</id>
+    <version>$version$</version>
+    <authors>eternal0,vivekrathod</authors>
+    <owners>eternal0,vivekrathod</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/legendary-code/process-domain</projectUrl>
+    <description>ProcessDomain implements a remoting solution for creating out-of-process AppDomains. It's written in C# and the assemblies will work with .NET Framework 2.0.</description>
+    <releaseNotes>Moving to GitHub actions for pull request checks and release process.  Removing copyrights as the company no longer exists.</releaseNotes>
+    <tags>AppDomain ProcessDomain Sandbox</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="log4net" version="2.0.12" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Build\Release\*.dll" target="lib\netstandard2.0" />
+    <file src="Build\Release\*.pdb" target="lib\netstandard2.0" />
+  </files>
+</package>
