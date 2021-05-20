@@ -1,4 +1,4 @@
-#ProcessDomain
+# ProcessDomain
 
 ProcessDomain implements a remoting solution for creating out-of-process AppDomains. It's written in C# and the assemblies will work with .NET Framework 2.0. Some possible usages include:
 * Further code isolation
@@ -7,7 +7,7 @@ ProcessDomain implements a remoting solution for creating out-of-process AppDoma
 
 See the example project for some usages
 
-#Features
+# Features
 
 * AppDomain-like semantics, so its usage is familiar and easy
 * Implements the IDisposable pattern
@@ -16,16 +16,16 @@ See the example project for some usages
 * Remote process assembly is generated on-the-fly at runtime
 * Remote process' AppDomain is fully configurable and by default takes on the settings of the AppDomain creating the ProcessDomain
 
-#Installation
+# Installation
 
 As of version 1.8, ProcessDomain will be available via NuGet as well: https://nuget.org/packages/ProcessDomain/1.8
 
-#Requirements
+# Requirements
 
-###To Build Source
+### To Build Source
 
 Visual Studio 2013
 [MSBuild Community Tasks 1.3](http://msbuildtasks.tigris.org/MSBuild.Community.Tasks.Nightly.msi)
 
-###To Use Assemblies
+### To Use Assemblies
 .NET Framework 2.0
