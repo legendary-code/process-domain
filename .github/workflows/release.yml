@@ -9,6 +9,10 @@ jobs:
   release:
     runs-on: windows-latest
     steps:
+      - name: Get Release Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
       - uses: actions/checkout@v1
         name: Checkout
 
@@ -27,13 +31,13 @@ jobs:
         run: nuget install MSBuildTasks -Version 1.5.0.235
 
       - name: Generate GlobalAssemblyInfo.cs
-        run: msbuild .\Version.proj /p:Version=${{ github.ref }}
+        run: msbuild .\Version.proj /p:Version=${{ steps.get_version.outputs.VERSION }}
 
       - name: Build Release
         run: msbuild ProcessDomain.sln /property:Configuration=Release
 
       - name: Create NuGet Package
-        run: nuget pack .\AppSecInc.ProcessDomain.nuspec -p version=${{ github.ref }}
+        run: nuget pack .\AppSecInc.ProcessDomain.nuspec -p version=${{ steps.get_version.outputs.VERSION }}
 
       - name: Publish NuGet Package
-        run: nuget push AppSecInc.ProcessDomain.${{ github.ref }}.nupkg -Source https://api.nuget.org/v3/index.json
+        run: nuget push AppSecInc.ProcessDomain.${{ steps.get_version.outputs.VERSION }}.nupkg -Source https://api.nuget.org/v3/index.json
