@@ -61,19 +61,7 @@ namespace AppSecInc.ProcessDomain.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to /*******************************************************************************
-        ///* ProcessDomain (http://processdomain.codeplex.com)
-        ///* 
-        ///* Copyright (c) 2011 Application Security, Inc.
-        ///* 
-        ///* All rights reserved. This program and the accompanying materials
-        ///* are made available under the terms of the Eclipse Public License v1.0
-        ///* which accompanies this distribution, and is available at
-        ///* http://www.eclipse.org/legal/epl-v10.html
-        ///*
-        ///* Contributors:
-        ///*     Application Security, Inc.
-        ///******************** [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string
         /// </summary>
         internal static string Program {
             get {
