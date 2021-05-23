@@ -30,6 +30,6 @@ Visual Studio 2013
 ### To Use Assemblies
 .NET Framework 2.0
 
-### To publish a release to NuGet
+### T Publish a Release to NuGet
 
 Simply publish a GitHub Release with the next correct semantic version, and the GitHub Actions workflow will take of building the package and publishing it to NuGet.
