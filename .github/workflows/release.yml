@@ -38,7 +38,7 @@ jobs:
         run: msbuild ProcessDomain.sln /property:Configuration=Release
 
       - name: Create NuGet Package
-        run: nuget pack .\AppSecInc.ProcessDomain.nuspec -p version=${{ steps.get_version.outputs.VERSION }}
+        run: nuget pack .\ProcessDomain.nuspec -p version=${{ steps.get_version.outputs.VERSION }}
 
       - name: Publish NuGet Package
-        run: nuget push AppSecInc.ProcessDomain.${{ steps.get_version.outputs.VERSION }}.nupkg -Source https://api.nuget.org/v3/index.json
+        run: nuget push ProcessDomain.${{ steps.get_version.outputs.VERSION }}.nupkg -Source https://api.nuget.org/v3/index.json

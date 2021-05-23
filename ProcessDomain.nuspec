@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package >
   <metadata>
-    <id>AppSecInc.ProcessDomain</id>
+    <id>ProcessDomain</id>
     <version>$version$</version>
     <authors>eternal0,vivekrathod</authors>
     <owners>eternal0,vivekrathod</owners>
